@@ -4,6 +4,7 @@ from typing import Union
 
 import azure.identity
 import openai
+import httpx
 
 logger = logging.getLogger("ragapp")
 
@@ -52,7 +53,13 @@ async def create_openai_chat_client(
         )
     else:
         logger.info("Setting up OpenAI client for chat completions using OpenAI.com API key")
-        openai_chat_client = openai.AsyncOpenAI(api_key=os.getenv("OPENAICOM_KEY"))
+        openai_chat_client = openai.AsyncOpenAI(
+            api_key=os.getenv("OPENAICOM_KEY"),
+            http_client=openai.DefaultAsyncHttpxClient(
+                proxy=os.getenv("OPENAICOM_PROXY") or None,
+                transport=httpx.HTTPTransport(local_address="0.0.0.0"),
+            )
+        )
 
     return openai_chat_client
 
@@ -101,5 +108,11 @@ async def create_openai_embed_client(
         )
     else:
         logger.info("Setting up OpenAI client for embeddings using OpenAI.com API key")
-        openai_embed_client = openai.AsyncOpenAI(api_key=os.getenv("OPENAICOM_KEY"))
+        openai_embed_client = openai.AsyncOpenAI(
+            api_key=os.getenv("OPENAICOM_KEY"),
+            http_client=openai.DefaultAsyncHttpxClient(
+                proxy=os.getenv("OPENAICOM_PROXY") or None,
+                transport=httpx.HTTPTransport(local_address="0.0.0.0")
+            )
+        )
     return openai_embed_client

@@ -28,7 +28,7 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            "/chat": "http://localhost:8000"
+            "/chat": "http://127.0.0.1:8000"
         },
         host: "127.0.0.1",
     }
